@@ -19,24 +19,34 @@ function pickRandomWord() {
     "gutter",
     "pierogi"
   ];
-  return bank[Math.ceil(Math.random(bank.length))];
+  return bank[Math.floor(Math.random() * bank.length)];
 }
 
-pickRandomWord();
+const guessWord = new Word(pickRandomWord());
 
 function game(){
+  if(guesses < guessessTotal){
+
     inquirer.prompt([
-      {
-        type: input,
-        name: letter,
-        message: "Pick a letter!"
-      }
-    ]).then(answers => {
-      
-    });
+        {
+          type: 'input',
+          name: 'letter',
+          message: "Pick a letter!"
+        }
+      ]).then(answers => {
+        guessWord.makeGuess(answers.letter)
+        console.log(guessWord.result());
+        if(guessWord.result().match(/-/g)){
+          guesses++;
+          game();
+        } else {
+          console.log(`you've won!!!!`)
+          process.exit();
+        }
+      });
+  }  
 }
 
-while(guesses < guessessTotal){
-    game()
-    guesses++;
-}
+game()
+    
+
